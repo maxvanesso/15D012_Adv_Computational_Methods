@@ -3,13 +3,15 @@ library(ggplot2)
 
 genData<-function(class1, class2, var, save.data=FALSE, save.plot=FALSE){
   
-  # Generating data
+  # Generating two different data classes
   
   x1<-seq(-1,1,length.out = class1)+rnorm(class1,0,var)
   y1<-seq(1,-1,length.out = class1)
   
   x2<-seq(1,-1,length.out = class2)
   y2<-seq(1,-1,length.out = class2)+rnorm(class2,0,var)
+  
+  # Putting together all the x and all the y for the two classes
   
   x<-c(x1,x2)
   y<-c(y1,y2)
@@ -18,20 +20,20 @@ genData<-function(class1, class2, var, save.data=FALSE, save.plot=FALSE){
   data<-data.frame(x=x,y=y,target=target)
   data$target<-as.factor(data$target)
   
-  # Save data
+  # Save the data into a csv file
   if(save.data==TRUE){
     write.table(data, 'dataset.csv', row.names = FALSE, sep=";")
   }
   
-  # Create plot
+  # Create a plot and saving it to a pdf
   if(save.plot==TRUE){
     
     
     pdf(file='dataPlot.pdf')
     
-    ggplot(data, aes(x = x, y = y, colours(distinct=TRUE), fill=target)) +     
-      geom_point(size=2) +
-      theme_bw() 
+    print(ggplot(data, aes(x = x, y = y, colour=target)) + scale_color_manual(values = c("red","green")) +    
+      geom_point(size=1) +
+      theme_bw() )
     
     dev.off()
     
