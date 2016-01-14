@@ -63,25 +63,8 @@ colnames(new)<-colnames(loanDf)
 data<-rbind(loanDf, new)
 data[,c(1,2,4)]<-apply(data[,c(1,2,4)],2,as.numeric)
 
-# Save data
-data <- data[,1:3]
-
-data$approved <- predict.lm(datafit1)
-data$approved[data$approved >= 0.5] <- 1
-data$approved[data$approved < 0.5] <- 0
-
-data$denied <- predict.lm(datafit)
-data$denied[data$denied >= 0.5] <- 1
-data$denied[data$denied < 0.5] <- 0
-
-data$undecided <- 0
-data$undecided[data$approved == 0 & data$denied ==0] <- 1
-
-write.table(data, 'predictions.csv', row.names = FALSE, sep=";")
-
 #target variable for each category
 data$target1<-c( rep(1,50), rep(0,100))
-
 
 # DISCRIMINANT ANALYSIS
 
@@ -100,15 +83,31 @@ datafit1 <- lm(as.numeric(target1) ~ solvency + PIratio + 1, data=data)
 weights <- coef(datafit1)[c("solvency", "PIratio")]
 bias <- coef(datafit1)[1]
 
-intercept <- (-bias + 0.5)/weights["PIratio"]
-slope <- -(weights["solvency"]/weights["PIratio"])
-bound1<-c(intercept,slope)
+intercept1 <- (-bias + 0.5)/weights["PIratio"]
+slope1 <- -(weights["solvency"]/weights["PIratio"])
+bound1<-c(intercept1,slope1)
+
+# Save data
+data <- data[,1:3]
+
+data$approved <- predict.lm(datafit1)
+data$approved[data$approved >= 0.5] <- 1
+data$approved[data$approved < 0.5] <- 0
+
+data$denied <- predict.lm(datafit)
+data$denied[data$denied >= 0.5] <- 1
+data$denied[data$denied < 0.5] <- 0
+
+data$undecided <- 0
+data$undecided[data$approved == 0 & data$denied ==0] <- 1
+
+write.table(data, 'predictions.csv', row.names = FALSE, sep=";")
 
 
 #Plot data with boundaries
 
 pdf('discFunction3C.pdf')
-print(ggplot(data = data, aes(x = solvency, y = PIratio, colour=deny, fill=deny)) +
+print(ggplot(data = data, aes(x = solvency, y = PIratio, colour=Response, fill=Response)) +
   scale_color_manual(values = c("green", "red", "yellow")) +
   geom_point(size=3) +
   xlab("Solvency") +
