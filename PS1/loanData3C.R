@@ -68,7 +68,7 @@ data$target1<-c( rep(1,50), rep(0,100))
 
 # DISCRIMINANT ANALYSIS
 
-#Bound: deny vs other
+#Bound: denied vs other
 datafit <- lm(as.numeric(target) ~ solvency + PIratio + 1, data=data)
 
 weights <- coef(datafit)[c("solvency", "PIratio")]
