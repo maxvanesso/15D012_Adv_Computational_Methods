@@ -42,9 +42,9 @@ shinyServer(function(input, output) {
     boundaryDf <- data.frame(PIratio=x, solvency=y, class=rep("Boundary", length(x)))
     
     ggplot(data = loanDf,
-          mapping=aes(x = solvency, y = PIratio, colour=class)) +
-          geom_point(size=4) + xlab("solvency") + ylab("PI ratio") + theme_bw() +
-          geom_line(data=boundaryDf) +
+          aes(x = solvency, y = PIratio, colour = factor(class))) +
+          geom_point(shape='x', size = 5) + xlab("solvency") + ylab("PI ratio") + 
+          theme_bw() + geom_line(data=boundaryDf) +
           scale_color_manual(values = c("blue", "grey", "black"))
     
   })
