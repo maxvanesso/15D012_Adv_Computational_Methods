@@ -5,6 +5,8 @@ MissClassError <- function(probability) {
 }
 
 Entropy <- function(probability) {
+  
+  prob[prob==0] <- 10^-17
   CrossEntropy <- - rowSums(probability*log(probability))
   return(CrossEntropy)
 }
@@ -36,7 +38,7 @@ FindThreshold <- function(x, y, costFnc) {
       
       probability <- matrix(NA,nrow = 2,ncol = length(unique(y)))
       probability[1,] <- table(y[x <= potentialThreshold])/length(y[x <= potentialThreshold])
-      probability[2,] <- table(y[x > potentialThreshold])/length(y[x <= potentialThreshold])
+      probability[2,] <- table(y[x > potentialThreshold])/length(y[x >= potentialThreshold])
      
       # We calculate the total cost of this split
       totalcost <- sum(costFnc(probability))
